@@ -2,7 +2,7 @@ import { Injectable, UseFilters } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { City } from './interfaces/city.interface';
-import { CreateCityDTO } from './dto/createCity.dto';
+import { CreateCityDTO, idParamDTO } from './dto/city.dto';
 
 @Injectable()
 export class CityService {
@@ -13,7 +13,7 @@ export class CityService {
         return cities
     }
 
-    async getCityById(id: string): Promise<City>{
+    async getCityById(id: idParamDTO): Promise<City>{
         const cityFound = await this.cityModel.findById(id); 
         return cityFound
     }
@@ -23,12 +23,12 @@ export class CityService {
         return cityCreated
     }
 
-    async updateCity(id: string, city:CreateCityDTO): Promise<City>{
+    async updateCity(id: idParamDTO, city:CreateCityDTO): Promise<City>{
         const cityUpdated = await this.cityModel.findByIdAndUpdate(id, city, {new: true});
         return cityUpdated
     }
 
-    async deleteCity(id: string): Promise<City>{
+    async deleteCity(id: idParamDTO): Promise<City>{
         const cityDeleted = await this.cityModel.findByIdAndRemove(id);
         return cityDeleted
     }
