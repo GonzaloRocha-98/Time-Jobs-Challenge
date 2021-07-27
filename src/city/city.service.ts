@@ -2,8 +2,7 @@ import { Injectable, UseFilters } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { City } from './interfaces/city.interface';
-import { CreateCityDTO } from './dto/city.dto';
-import { MongoExceptionFilter } from 'src/filters/mongo-exceptiom.filter';
+import { CreateCityDTO } from './dto/createCity.dto';
 
 @Injectable()
 export class CityService {
