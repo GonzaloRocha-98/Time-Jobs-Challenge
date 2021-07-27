@@ -1,10 +1,13 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Res, UseFilters } from '@nestjs/common';
 import { identity } from 'rxjs';
 import { CreateCityDTO } from './dto/city.dto';
 import { CityService } from './city.service'
 import {setResponseWithError, setResponseWithOk} from '../util/common-response.js'
+import { AllExceptionsFilter } from 'src/filters/all-exception.filter';
+import { MongoExceptionFilter } from 'src/filters/mongo-exceptiom.filter';
 
 @Controller('city')
+@UseFilters(AllExceptionsFilter, MongoExceptionFilter)
 export class CityController {
     constructor(private cityService: CityService ){}
 
@@ -12,14 +15,9 @@ export class CityController {
     async getAllCity(@Res() res){
         const cities = await this.cityService.getCities();
         if(!cities) {
-            setResponseWithError(res, HttpStatus.BAD_REQUEST, "Invalid id", 'error', cities)
+            throw new HttpException("Invaid id", HttpStatus.BAD_REQUEST)
         }
             return setResponseWithOk(res, HttpStatus.OK, 'List all cities', 'ok', cities)
-        /*res.status(HttpStatus.OK).json({
-            message: "all cities",
-            cities
-        })
-        */
     }
 
 
@@ -28,59 +26,36 @@ export class CityController {
         console.log(createCityDTO)
         const cityCreated = await this.cityService.createCity(createCityDTO);
         if(!cityCreated){
-            return setResponseWithError(res, HttpStatus.BAD_REQUEST, 'oCURRIO un error ', 'error', cityCreated)
+            throw new HttpException('No se pudo crear', HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return setResponseWithOk(res, HttpStatus.OK, 'City created', 'ok', cityCreated)
-        /*
-        return res.status(HttpStatus.CREATED).json({
-            message: "creado",
-            cityCreated
-        })
-        */
     }
 
     @Get('/:id')
     async getCityById(@Res() res, @Param('id') id){
         const cityFound = await this.cityService.getCityById(id);;
         if(!cityFound){
-            return setResponseWithError(res, HttpStatus.BAD_REQUEST,"Invalid id", 'error', cityFound)
+            throw new HttpException("Invalid id", HttpStatus.BAD_REQUEST)
         }
         return setResponseWithOk(res, HttpStatus.OK, `City with id ${id}`, 'ok', cityFound);
-        /*
-        return res.status(HttpStatus.OK).json({
-            message: `Ciudad ${id}`,
-            cityFound
-        })
-        */
     }
 
     @Delete('/:id')
     async deleteCityById(@Res() res, @Param('id') id){
         const cityDeleted = await this.cityService.deleteCity(id);
         if(!cityDeleted){
-            return setResponseWithError(res, HttpStatus.BAD_REQUEST, 'invalid id', 'error', cityDeleted)
+            throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST)
         }
         return setResponseWithOk(res, HttpStatus.OK, 'City deleted', 'ok', cityDeleted)
-        /*
-        return res.status(HttpStatus.OK).json({
-            message: `Ciudad ${id}`,
-            cityDeleted
-        })
-        */
     }
 
     @Patch('/:id')
     async updateCityById(@Res() res, @Param('id') id, @Body() body){
         const cityUpdated = await this.cityService.updateCity(id, body);
         if(!cityUpdated){
-            return setResponseWithError(res, HttpStatus.BAD_REQUEST, 'invalid id', 'error', cityUpdated)
+            throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST)
         }
         return setResponseWithOk(res, HttpStatus.OK, 'City updated', 'ok', cityUpdated)
-        /*
-        return res.status(HttpStatus.OK).json({
-            message: `Ciudad ${id}`,
-            cityUpdated
-        })
-        */
+
     }
 }
