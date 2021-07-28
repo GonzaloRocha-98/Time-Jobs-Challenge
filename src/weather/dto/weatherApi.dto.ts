@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator"
-import { ApiBadRequestResponse, ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from "@nestjs/swagger";
 
-export class CreateCityDTO{
+export class WeatherApiDTO{
     @IsString()
     @IsNotEmpty()
     @ApiProperty({type: String, description: 'city name'})
@@ -26,10 +26,6 @@ export class CreateCityDTO{
     @IsNumber()
     @ApiProperty({type: String, description: "TemperatureMin"})
     temperatureMin: number;
-}
 
-export class idParamDTO{
-    @IsNotEmpty()
-    @ApiProperty({type: String, description:'Id of city'})
-    id: string
+    updated: Date;
 }

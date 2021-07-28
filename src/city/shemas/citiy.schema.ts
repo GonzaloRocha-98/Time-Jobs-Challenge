@@ -19,6 +19,9 @@ export class City {
 
   @Prop()
   temperatureMax: number;
+
+  @Prop({required: false, default: Date.now()})
+  updated: Date
 }
 
 export const CitySchema = SchemaFactory.createForClass(City);

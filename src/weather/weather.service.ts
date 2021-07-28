@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import {HttpService} from '@nestjs/axios'
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { WeatherAPI } from './interfaces/weatherAPI.interface';
-import { CreateCityDTO } from 'src/city/dto/city.dto';
+import { WeatherApiDTO } from './dto/weatherApi.dto';
+import { CityService } from '../city/city.service'
 
 @Injectable()
 export class WeatherService {
@@ -13,7 +14,7 @@ export class WeatherService {
 
   private readonly API_KEY = process.env.API_KEY_OPENWEATHER;
 
-  constructor(private httpService : HttpService){
+  constructor(private cityService: CityService){
     this.client = Axios.create({
       baseURL: this.WEATHER_API_URL,
       params:{
@@ -22,7 +23,7 @@ export class WeatherService {
       }
     })
   }
-  async getWeather(city: string): Promise<CreateCityDTO>{
+  async getWeather(city: string): Promise<WeatherApiDTO>{
     const weatherCity = await this.client.get('weather', {
       params: {
         q:city
@@ -31,34 +32,37 @@ export class WeatherService {
     return this.parseResponse(weatherCity.data)
   }
 
-  private parseResponse(cityResponse: WeatherAPI): CreateCityDTO {
+  private parseResponse(cityResponse: WeatherAPI): WeatherApiDTO {
     const response =  {
       name: cityResponse.name,
       country: cityResponse.sys.country,
       temperature: cityResponse.main.temp,
       temperatureMax: cityResponse.main.temp_max,
-      temperatureMin: cityResponse.main.temp_min
+      temperatureMin: cityResponse.main.temp_min,
+      updated: new Date()
     }
     return response
   }
 
-  // create(createWeatherDto: CreateWeatherDto) {
-  //   return 'This action adds a new weather';
-  // }
+  async getWeatherByApiOrBD(city: string){
+    const cityBD = await this.cityService.getCityByName(city);
+    if(cityBD){ //Preguna si existe la ciudad en la bd
+      if((cityBD.updated.getTime() + 60000) >= Date.now()){ //damos un lapso de 1 minuto para devolver la data de la bd
+        //console.log('mandamos la city de bd');
+        return cityBD
+      }
+      else{   //Sino hacemos el llamado a la api y actualizamos el valor en la bd
+        //console.log('Llamamos a la api y traemos la data')
+        const cityApi = await this.getWeather(city);
+        await this.cityService.updateCity(cityBD._id.valueOf(), cityApi)
+        return cityApi
+      }
+    }
+    //Si no existe en la bd, llamamos a la api y persistmos
+    //console.log('Llamams a la api mandamos la data y persisitmos en la bd')
+    const cityApi = await this.getWeather(city);
+    await this.cityService.createCity(cityApi)
+    return cityApi
+  }
 
-  // findAll() {
-  //   return `This action returns all weather`;
-  // }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} weather`;
-  // }
-
-  // update(id: number, updateWeatherDto: UpdateWeatherDto) {
-  //   return `This action updates a #${id} weather`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} weather`;
-  // }
 }
