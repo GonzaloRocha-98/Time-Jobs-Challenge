@@ -7,6 +7,7 @@ import { City } from './shemas/citiy.schema';
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
 
 @Controller('city')
+@ApiTags('City')
 @UseFilters(AllExceptionsFilter, MongoExceptionFilter)
 export class CityController {
     constructor(private cityService: CityService ){}

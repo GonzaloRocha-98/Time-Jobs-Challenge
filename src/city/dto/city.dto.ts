@@ -16,6 +16,16 @@ export class CreateCityDTO{
     @IsNumber()
     @ApiProperty({type: String, description: "Temperature"})
     temperature: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    @ApiProperty({type: String, description: "TemperatureMax"})
+    temperatureMax: number;
+
+    @IsNotEmpty()
+    @IsNumber()
+    @ApiProperty({type: String, description: "TemperatureMin"})
+    temperatureMin: number;
 }
 
 export class idParamDTO{
