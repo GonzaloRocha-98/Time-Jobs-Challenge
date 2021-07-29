@@ -10,7 +10,7 @@ async function bootstrap() {
     .setTitle('Weather API')
     .setDescription('This is an api where you can get current weather of a city')
     .setVersion('1.0')
-    .addTag('City')
+    .addTag('Weather', 'City')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);

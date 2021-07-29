@@ -6,4 +6,5 @@ export interface City{
     readonly temperatureMin: number;
     readonly temperatureMax: number;
     readonly updated: Date;
+    readonly __v: number;
 }

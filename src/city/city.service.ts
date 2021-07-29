@@ -1,4 +1,4 @@
-import { Injectable, UseFilters } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { City } from './interfaces/city.interface';
@@ -34,6 +34,7 @@ export class CityService {
     }
 
     async getCityByName(name: string): Promise<City>{
+        name = name.charAt(0).toUpperCase() + name.slice(1);
         const cityFound = await this.cityModel.findOne({name})
         return cityFound
     }

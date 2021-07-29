@@ -27,5 +27,6 @@ export class WeatherApiDTO{
     @ApiProperty({type: String, description: "TemperatureMin"})
     temperatureMin: number;
 
+    @ApiProperty({type: Date, description: 'Date when it was updated'})
     updated: Date;
 }

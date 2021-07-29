@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, Res, UseFilters, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Patch, Post, UseFilters, ValidationPipe } from '@nestjs/common';
 import { CityWeatherDTO } from './dto/cityWeather.dto';
 import { CityService } from './city.service'
-import { AllExceptionsFilter } from 'src/filters/all-exception.filter';
-import { MongoExceptionFilter } from 'src/filters/mongo-exceptiom.filter';
+import { AllExceptionsFilter } from '../filters/all-exception.filter';
+import { MongoExceptionFilter } from '../filters/mongo-exceptiom.filter';
 import { City } from './shemas/citiy.schema';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 
 @Controller('city')
 @ApiTags('City')
@@ -23,6 +23,7 @@ export class CityController {
     }
 
     @ApiCreatedResponse({description: "City Created"})
+    @ApiBadRequestResponse({description: 'Bad Request'})
     @ApiBody({type: CityWeatherDTO})
     @Post('/')
     async createCity(@Body(ValidationPipe) CityWeatherDTO: CityWeatherDTO): Promise<City>{
@@ -43,7 +44,7 @@ export class CityController {
         }
         return cityFound
     }
-
+    
     @ApiOkResponse({description: "Delete a city"})
     @ApiBadRequestResponse({description: "Invalid id"})
     @Delete('/:id')
