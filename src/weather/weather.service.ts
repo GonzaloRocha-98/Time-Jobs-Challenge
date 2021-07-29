@@ -1,5 +1,4 @@
-import { Injectable } from '@nestjs/common';
-import {HttpService} from '@nestjs/axios'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import Axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { WeatherAPI } from './interfaces/weatherAPI.interface';
 import { WeatherApiDTO } from './dto/weatherApi.dto';
@@ -24,11 +23,32 @@ export class WeatherService {
     })
   }
   async getWeather(city: string): Promise<WeatherApiDTO>{
-    const weatherCity = await this.client.get('weather', {
-      params: {
-        q:city
+    let attempt = 1;
+    let weatherCity;
+    while(attempt< 4){  // Tres intentos para simular el 15% de fallo
+      let num = Math.round(Math.random() * (100 - 1) + 1); 
+      console.log(num);
+      if(num > 15){ //El numero random paso el 15% de fallo artificial
+        try {
+          weatherCity = await this.client.get('weather', {
+            params: {
+              q:city
+            }
+          });
+        } catch (error) {
+          if(error.response.status === 404){
+            throw new HttpException('Invalid city name', HttpStatus.NOT_FOUND)
+          }
+        }
+        attempt = 4;
+      }else{
+        attempt++;
       }
-    })
+    }
+    if(!weatherCity){
+      throw new HttpException('An Error ocurred while trying to connect with an OpenWeather api. Try it again', HttpStatus.SERVICE_UNAVAILABLE)
+    }
+
     return this.parseResponse(weatherCity.data)
   }
 
