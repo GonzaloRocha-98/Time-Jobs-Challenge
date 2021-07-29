@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { WeatherService } from './weather.service';
-import { WeatherAPI } from './interfaces/weatherAPI.interface';
 import { weatherStub } from './stubs/weather.stub';
 import { WeatherApiDTO } from './dto/weatherApi.dto';
 import Axios from "axios";

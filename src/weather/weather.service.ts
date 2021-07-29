@@ -47,7 +47,6 @@ export class WeatherService {
     if(!weatherCity){
       throw new HttpException('An Error ocurred while trying to connect with an OpenWeather api. Try it again', HttpStatus.SERVICE_UNAVAILABLE)
     }
-    console.log(JSON.stringify(weatherCity.data.weather))
     return this.parseResponse(weatherCity.data)
   }
 

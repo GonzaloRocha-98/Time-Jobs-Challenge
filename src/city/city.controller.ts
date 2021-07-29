@@ -4,7 +4,7 @@ import { CityService } from './city.service'
 import { AllExceptionsFilter } from '../filters/all-exception.filter';
 import { MongoExceptionFilter } from '../filters/mongo-exceptiom.filter';
 import { City } from './shemas/citiy.schema';
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger'
 
 @Controller('city')
 @ApiTags('City')
@@ -36,6 +36,7 @@ export class CityController {
 
     @ApiOkResponse({description: "Get a city"})
     @ApiBadRequestResponse({description: "Invalid id"})
+    @ApiParam({name:'id', required: true})
     @Get('/:id')
     async getCityById(@Param('id', ValidationPipe) id): Promise<City>{
         const cityFound = await this.cityService.getCityById(id);;
@@ -47,6 +48,7 @@ export class CityController {
     
     @ApiOkResponse({description: "Delete a city"})
     @ApiBadRequestResponse({description: "Invalid id"})
+    @ApiParam({name:'id', required: true})
     @Delete('/:id')
     async deleteCityById(@Param('id', ValidationPipe) id): Promise<City>{
         const cityDeleted = await this.cityService.deleteCity(id);
@@ -57,6 +59,8 @@ export class CityController {
     }
 
     @ApiOkResponse({description: "Update a city"})
+    @ApiParam({name:'id', required: true})
+    @ApiBody({type: CityWeatherDTO})
     @ApiBadRequestResponse({description: "Invalid id"})
     @Patch('/:id')
     async updateCityById(@Param('id', ValidationPipe) id, @Body() body): Promise<City>{
