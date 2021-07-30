@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+    nest_app:
+        container_name: nest_app
+        build: .
+        ports:
+            - "3000:3000"
+        env_file: .env
+        links: 
+            - mongodb
+        depends_on:
+            - mongodb
+        environment:
+            DB_URL: mongodb://mongo:27017/weather
+            OPENWEATHER_PATH_BASE : https://api.openweathermap.org/data/2.5/
+            UNITS : metric
+            API_KEY_OPENWEATHER : 1c94f9dc56744b25010ca5a49a09d67f
+        networks:
+            - nest_mongo_network
+    mongodb:
+        container_name: mongo
+        restart: always
+        image: mongo
+        ports: 
+            - "27017:27017"
+        volumes:
+            - ~/mongo:/data/db
+        networks:
+            - nest_mongo_network
+networks:
+    nest_mongo_network:
+        driver: bridge
