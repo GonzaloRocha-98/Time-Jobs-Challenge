@@ -24,9 +24,17 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is a weather API, this connects with the OpenWeather api, it return the weather of at least one specified city. If the same city is resent within a minute, it will return the weather saved in a db.
 
-## Installation
+
+## Installation wit Docker
+
+```bash
+docker-compose build
+docker-compose up
+```
+
+## Installation local
 
 ```bash
 $ npm install
@@ -58,16 +66,6 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
+## Documentation
+The documentation is made with Swagger.
+Up to the app and go to : *localhost:3000/api/docs*
